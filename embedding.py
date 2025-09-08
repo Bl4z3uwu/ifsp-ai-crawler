@@ -7,6 +7,7 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 CHROMA_DB_PATH = "./db/" 
 
+# Using Google Generative AI Embedding Function, can be replaced with others
 embedding_function = embedding_functions.GoogleGenerativeAiEmbeddingFunction(api_key=GOOGLE_API_KEY)
 
 def update_database(data):  
@@ -17,24 +18,26 @@ def update_database(data):
     )
 
     if not data:
-        print("Nenhum dado para adicionar.")
+        print("No data to insert into the database.")
         return
-
+    
+    # Assigning IDs, contents, and metadatas from data
     ids = [item["id"] for item in data]
     contents = [item["conteudo"] for item in data]
     metadatas = [item["metadados"] for item in data]
 
-    print(f"Enviando {len(contents)} documentos para a coleção (Upsert)...")
+    print(f"Sending {len(contents)} documents to collection (Upsert)...")
     
     collection.upsert(ids=ids, documents=contents, metadatas=metadatas)
 
-    print("\n--- SUCESSO! ---")
-    print(f"O banco de dados foi populado. Total de itens: {collection.count()}")
+    print("\n--- SUCESS! ---")
+    print(f"The database has been populated. Total of itens: {collection.count()}")
 
 def query_database(query):
     client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
     collection = client.get_collection(name="vtp.ifsp_data", embedding_function=embedding_function)
 
+    # Querying the database for relevant documents, 5 results is enough for context
     results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])
 
     return results
