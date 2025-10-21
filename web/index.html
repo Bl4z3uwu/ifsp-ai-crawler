@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot IFSP Votuporanga</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Assistente Virtual - IFSP Votuporanga</h2>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">Olá! Como posso ajudar você a encontrar informações sobre o IFSP Votuporanga?</div>
+        </div>
+        <div class="chat-input-form">
+            <input type="text" id="user-input" placeholder="Digite sua pergunta aqui...">
+            <button id="send-button">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages'); // Can be useful to try history feature later
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        async function sendMessage() {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            addMessage(query, 'user');
+            userInput.value = '';
+            addTypingIndicator();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query }),
+                });
+
+                const data = await response.json();
+                removeTypingIndicator();
+
+                addMessage(data.response, 'bot');
+
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage('Desculpe, ocorreu um erro ao conectar com o servidor.', 'bot');
+                console.error('Erro:', error);
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            messageElement.innerHTML = text.replace(/\n/g, '<br>');
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addSources(sources) {
+            if (!sources || sources.length === 0) return;
+            
+            const sourcesContainer = document.createElement('div');
+            sourcesContainer.classList.add('message', 'bot', 'sources');
+            let html = '<strong>Fontes consultadas:</strong><ul>';
+            sources.forEach(source => {
+                html += `<li><a href="${source.fonte}" target="_blank">${source.titulo}</a></li>`;
+            });
+            html += '</ul>';
+            sourcesContainer.innerHTML = html;
+            chatMessages.appendChild(sourcesContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function addTypingIndicator() {
+            const typingElement = document.createElement('div');
+            typingElement.classList.add('message', 'bot', 'typing-indicator');
+            typingElement.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(typingElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.querySelector('.typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

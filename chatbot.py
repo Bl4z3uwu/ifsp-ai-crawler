@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify, render_template
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -33,31 +34,41 @@ def get_gemini_response(query: str, context: List[str]) -> str:
     response = model.generate_content(prompt)
     return response.text
 
-# Discartable part, just for testing in terminal
-while True:
-    query = input("Pergunta: ")
-    if query.lower() == 'sair':
-        break
+# Creating the API with Flask
+
+template_dir = os.path.abspath('web')
+app = Flask('app',template_folder=template_dir)
+app.static_folder = 'static'
+
+@app.route('/')
+def main():
+    return render_template('index.html')
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_input = request.get_json().get('query')
+    results = query_database(user_input)
+    response = get_gemini_response(user_input, results['documents'][0])
+    return jsonify({'response': response})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+'''
+Test in terminal
+user_input = input("Digite sua pergunta: ")
+results = query_database(user_input)
+print(get_gemini_response(user_input, results['documents'][0]))
+'''
+
+
+''' Debug if needed
+    print("\n--- Resposta ---")
+    print(response)
     
-    print("\nPensando...\n")
+    print("\n--- Contexto ---")
+    print("\n".join(context_docs))
 
-    results = query_database(query)
-
-    # Making sure we have results and documents
-    if results and results["documents"]:
-        context_docs = results["documents"][0]
-        metadata_docs = results["metadatas"][0]
-        
-        response = get_gemini_response(query, context_docs)
-
-        ''' Debug if needed
-        print("\n--- Resposta ---")
-        print(response)
-        
-        print("\n--- Contexto ---")
-        print("\n".join(context_docs))
-
-        print("\n--- Metadados ---")
-        for metadata in metadata_docs:
-            print(metadata)
-        '''
+    print("\n--- Metadados ---")
+    for metadata in metadata_docs:
+        print(metadata)
+'''

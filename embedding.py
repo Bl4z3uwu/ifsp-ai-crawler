@@ -7,8 +7,12 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 CHROMA_DB_PATH = "./db/" 
 
-# Using Google Generative AI Embedding Function, can be replaced with others
-embedding_function = embedding_functions.GoogleGenerativeAiEmbeddingFunction(api_key=GOOGLE_API_KEY)
+# Google Generative AI Embedding Function, but aparently gemini doesn't like me :(
+# embedding_function = embedding_functions.GoogleGenerativeAiEmbeddingFunction(api_key=GOOGLE_API_KEY)
+
+embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
 
 def update_database(data):  
     client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
