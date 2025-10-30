@@ -49,7 +49,11 @@
 
             } catch (error) {
                 removeTypingIndicator();
-                addMessage('Desculpe, ocorreu um erro ao conectar com o servidor.', 'bot');
+                if (error.includes("quota")) {
+                    addMessage('Desculpe, a cota de uso da API foi excedida. Por favor, tente novamente mais tarde.', 'bot');
+                } else {
+                    addMessage('Desculpe, ocorreu um erro desconhecido. Por favor, entre em contato com o desenvolvedor.', 'bot');
+                }
                 console.error('Erro:', error);
             }
         }
