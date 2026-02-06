@@ -7,7 +7,7 @@
 
 The IFSP AI Crawler is a Web Scraping application that scans the IFSP Votuporanga website, extracts and organizes raw data, converts it into an embeddings database, and applies the RAG (Retrieval-Augmented Generation) process to answer user queries.  
 
-This project is part of my final research pape and aims to demonstrate the integration of data collection, processing, and artificial intelligence techniques to build an intelligent search system.
+This project is part of my final research paper and aims to demonstrate the integration of data collection, processing, and artificial intelligence techniques to build an intelligent search system.
 
 ---
 
