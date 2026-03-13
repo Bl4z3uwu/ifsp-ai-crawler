@@ -5,7 +5,7 @@ import time
 
 # Main function to extract news articles from the IFSP Votuporanga website
 def extract_news():
-    url = "https://vtp.ifsp.edu.br/index.php/noticias.html"
+    url = "https://vtp.ifsp.edu.br/index.php/noticias.html?limit=10"
     print(f"Acessing URL: {url}")
     response = requests.get(url)
     

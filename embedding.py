@@ -10,16 +10,9 @@ CHROMA_DB_PATH = "./db/"
 # Google Generative AI Embedding Function, but aparently gemini doesn't like me :(
 # embedding_function = embedding_functions.GoogleGenerativeAiEmbeddingFunction(api_key=GOOGLE_API_KEY)
 
-embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="all-MiniLM-L6-v2"
-)
-
 def update_database(data):  
     client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
-    collection = client.get_or_create_collection(
-        name="vtp.ifsp_data",
-        embedding_function=embedding_function
-    )
+    collection = client.get_or_create_collection(name="vtp.ifsp_data")
 
     if not data:
         print("No data to insert into the database.")
@@ -39,7 +32,7 @@ def update_database(data):
 
 def query_database(query):
     client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
-    collection = client.get_collection(name="vtp.ifsp_data", embedding_function=embedding_function)
+    collection = client.get_collection(name="vtp.ifsp_data")
 
     # Querying the database for relevant documents, 5 results is enough for context
     results = collection.query(query_texts=[query], n_results=5, include=["documents", "metadatas"])

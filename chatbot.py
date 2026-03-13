@@ -1,15 +1,16 @@
 from flask import Flask, request, jsonify, render_template
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from embedding import query_database
 from typing import List
 
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=GOOGLE_API_KEY)
+client = genai.Client()
 
-model = genai.GenerativeModel("gemini-2.5-pro")
+model = "gemini-3-flash-preview"
 
 def build_prompt(query: str, context: List[str]) -> str:
     # Join context pieces with separators for clarity
@@ -31,7 +32,10 @@ def build_prompt(query: str, context: List[str]) -> str:
 
 def get_gemini_response(query: str, context: List[str]) -> str:
     prompt = build_prompt(query, context)
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model=model,
+        contents=prompt
+    )
     return response.text
 
 # Creating the API with Flask
