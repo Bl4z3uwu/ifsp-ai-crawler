@@ -15,7 +15,8 @@ This project is part of my final research paper and aims to demonstrate the inte
 
 - **Python**  
 - **Requests**  
-- **BeautifulSoup**  
+- **BeautifulSoup**
+- **Crawl4AI**
 - **ChromaDB**  
 - **Google Gemini API**  
 
