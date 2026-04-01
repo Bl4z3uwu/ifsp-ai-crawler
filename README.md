@@ -26,7 +26,7 @@ This project is part of my final research paper and aims to demonstrate the inte
 
 1. Clone this repository:  
    ```
-   git clone https://github.com/your-username/ifsp-ai-crawler.git
+   git clone https://github.com/Bl4z3uwu/ifsp-ai-crawler.git
    cd ifsp-ai-crawler
    ```
 2. Create and activate a virtual environment (optional but recommended):
