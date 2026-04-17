@@ -9,6 +9,8 @@ The IFSP AI Crawler is a Web Scraping application that scans the IFSP Votuporang
 
 This project is part of my final research paper and aims to demonstrate the integration of data collection, processing, and artificial intelligence techniques to build an intelligent search system.
 
+**WARNING: This project was discontinued due to the structure of the chosen website. I used a similar project as my final research paper.**
+
 ---
 
 ## Technologies and Libraries  
